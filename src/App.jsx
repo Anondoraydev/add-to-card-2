@@ -3,22 +3,22 @@ import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import Product from "./components/Product";
-import ProductDetailsPage from "./pages/ProductDetailsPage"; // Product Details Page
-import CartPage from "./pages/CartPage"; // Cart Page
-import Breadcrumbs from "./components/Breadcrumbs"; // Breadcrumbs
+import ProductDetailsPage from "./pages/ProductDetailsPage";
+import CartPage from "./pages/CartPage";
+import Breadcrumbs from "./components/Breadcrumbs";
 
 const App = () => {
-  const [cart, setCart] = useState([]); // Cart state to store added products
-  const [products, setProducts] = useState([]); // Products state to store products fetched from the API
-  const [loading, setLoading] = useState(true); // Loading state to show loading indicator
+  const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
 
   useEffect(() => {
-    // Fetch products from an API
     axios
       .get("https://fakestoreapi.com/products")
       .then((response) => {
-        setProducts(response.data); // Set products data
-        setLoading(false); // Set loading state to false once products are loaded
+        setProducts(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("There was an error fetching the products!", error);
@@ -27,12 +27,17 @@ const App = () => {
   }, []);
 
   const handleAddToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]); // Add product to cart
+    setCart((prevCart) => [...prevCart, product]);
   };
+
+  // Filter products based on search query
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="font-sans text-gray-900">
-      <Navbar cartCount={cart.length} /> {/* Display Cart Count in Navbar */}
+      <Navbar cartCount={cart.length} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="container mx-auto p-4">
         <Breadcrumbs />
         <Routes>
@@ -42,8 +47,10 @@ const App = () => {
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 {loading ? (
                   <div>Loading...</div>
+                ) : filteredProducts.length === 0 ? (
+                  <div>No products found</div>
                 ) : (
-                  products.map((product) => (
+                  filteredProducts.map((product) => (
                     <Product
                       key={product.id}
                       product={product}
@@ -55,7 +62,7 @@ const App = () => {
             }
           />
           <Route path="/cart" element={<CartPage cart={cart} setCart={setCart} />} />
-          <Route path="/product/:productId" element={<ProductDetailsPage />} />
+          <Route path="/product/:productId" element={<ProductDetailsPage onAddToCart={handleAddToCart} />} />
         </Routes>
       </div>
     </div>

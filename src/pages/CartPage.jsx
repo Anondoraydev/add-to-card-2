@@ -63,4 +63,4 @@ const CartPage = ({ cart, setCart }) => {
   );
 };
 
-export default CartPage;
+export default CartPage; 
