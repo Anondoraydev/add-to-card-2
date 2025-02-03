@@ -6,12 +6,15 @@ import Product from "./components/Product";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import CartPage from "./pages/CartPage";
 import Breadcrumbs from "./components/Breadcrumbs";
+import Popup from "./components/Popup"; // Import Popup component
 
 const App = () => {
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // Search query state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
+  const [popupMessage, setPopupMessage] = useState(""); // State for the popup message
 
   useEffect(() => {
     axios
@@ -28,9 +31,17 @@ const App = () => {
 
   const handleAddToCart = (product) => {
     setCart((prevCart) => [...prevCart, product]);
+
+    // Show popup with the product name
+    setPopupMessage(`${product.title} has been added to your cart!`);
+    setShowPopup(true);
+
+    // Hide popup after 2 seconds
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
   };
 
-  // Filter products based on search query
   const filteredProducts = products.filter((product) =>
     product.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -65,6 +76,9 @@ const App = () => {
           <Route path="/product/:productId" element={<ProductDetailsPage onAddToCart={handleAddToCart} />} />
         </Routes>
       </div>
+
+      {/* Show Popup if showPopup is true */}
+      {showPopup && <Popup message={popupMessage} onClose={() => setShowPopup(false)} />}
     </div>
   );
 };
