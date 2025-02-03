@@ -57,7 +57,7 @@ const App = () => {
             element={
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 {loading ? (
-                  <div>Loading...</div>
+                  <span className="loading loading-spinner text-warning top-1/2 left-1/2 absolute w-9"></span>
                 ) : filteredProducts.length === 0 ? (
                   <div>No products found</div>
                 ) : (
