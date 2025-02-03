@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FiShoppingCart } from "react-icons/fi"; // Import cart icon
 
 const Navbar = ({ cartCount }) => {
   return (
@@ -9,7 +10,7 @@ const Navbar = ({ cartCount }) => {
         <div className="relative">
           <Link to="/cart">
             <button className="bg-blue-700 px-4 py-2 rounded-full">
-              Cart
+              <FiShoppingCart className="text-2xl" />
               {cartCount > 0 && (
                 <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs px-2">
                   {cartCount}

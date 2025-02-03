@@ -1,75 +1,63 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Breadcrumbs from "../components/Breadcrumbs"; // Importing Breadcrumbs
+import { FiTrash2 } from "react-icons/fi"; // Trash icon to delete items
 
-const CartPage = ({ cart }) => {
+const CartPage = ({ cart, setCart }) => {
+  // Function to remove item from cart
+  const handleRemoveFromCart = (index) => {
+    const updatedCart = cart.filter((_, i) => i !== index);
+    setCart(updatedCart);
+  };
+
+  // Function to clear the entire cart
+  const handleClearCart = () => {
+    setCart([]);
+  };
+
   if (cart.length === 0) {
     return (
-      <div className="mt-4 p-6 border rounded bg-white shadow-md">
-        <Breadcrumbs />
-        <h2 className="text-xl font-bold mb-4">Your Cart is Empty</h2>
-        <Link to="/" className="text-blue-500">
-          Go back to shopping
-        </Link>
+      <div className="mt-4 p-6 border rounded bg-white shadow-md text-center">
+        <p className="text-lg font-semibold">Your cart is empty.</p>
       </div>
     );
   }
 
   return (
     <div className="mt-4 p-6 border rounded bg-white shadow-md">
-      <Breadcrumbs />
       <h2 className="text-xl font-bold mb-4">Your Cart</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="border-b">
-              <th className="p-4 text-left">Product</th>
-              <th className="p-4 text-left">Description</th>
-              <th className="p-4 text-left">Price</th>
-              <th className="p-4 text-left">Quantity</th>
-              <th className="p-4 text-left">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cart.map((product, index) => (
-              <tr key={index} className="border-b">
-                <td className="p-4">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-16 h-16 object-cover rounded"
-                  />
-                </td>
-                <td className="p-4">{product.title}</td>
-                <td className="p-4">${product.price}</td>
-                <td className="p-4">
-                  <input
-                    type="number"
-                    defaultValue={1}
-                    className="w-12 p-2 border rounded"
-                  />
-                </td>
-                <td className="p-4">${product.price}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-6 flex justify-between items-center">
-        <div className="font-bold text-lg">
-          Total: ${cart.reduce((total, product) => total + product.price, 0)}
-        </div>
-        <div>
-          <Link to="/" className="px-6 py-2 bg-blue-500 text-white rounded">
-            Continue Shopping
-          </Link>
-          <button
-            className="ml-4 px-6 py-2 bg-green-500 text-white rounded"
-            // Implement checkout functionality here
-          >
-            Checkout
-          </button>
-        </div>
+
+      {/* Clear Cart Button */}
+      <button
+        className="bg-red-500 text-white py-2 px-4 rounded mb-4"
+        onClick={handleClearCart}
+      >
+        Clear Cart
+      </button>
+
+      <ul>
+        {cart.map((product, index) => (
+          <li key={index} className="mb-4 flex items-center justify-between border-b pb-4">
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-20 h-20 object-cover rounded"
+            />
+            <div className="flex-1 ml-4">
+              <strong>{product.title}</strong>
+              <p className="text-gray-600">${product.price}</p>
+            </div>
+            {/* Trash icon to remove product */}
+            <button
+              className="text-red-500 hover:text-red-700"
+              onClick={() => handleRemoveFromCart(index)}
+            >
+              <FiTrash2 className="text-2xl" />
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-4 text-lg font-bold">
+        Total: ${cart.reduce((total, product) => total + product.price, 0)}
       </div>
     </div>
   );

@@ -3,21 +3,22 @@ import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import Product from "./components/Product";
-import ProductDetailsPage from "./pages/ProductDetailsPage"; // Import ProductDetailsPage
-import CartPage from "./pages/CartPage";
-import Breadcrumbs from "./components/Breadcrumbs";
+import ProductDetailsPage from "./pages/ProductDetailsPage"; // Product Details Page
+import CartPage from "./pages/CartPage"; // Cart Page
+import Breadcrumbs from "./components/Breadcrumbs"; // Breadcrumbs
 
 const App = () => {
-  const [cart, setCart] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState([]); // Cart state to store added products
+  const [products, setProducts] = useState([]); // Products state to store products fetched from the API
+  const [loading, setLoading] = useState(true); // Loading state to show loading indicator
 
   useEffect(() => {
+    // Fetch products from an API
     axios
-      .get("https://fakestoreapi.com/products") // Fetch products list
+      .get("https://fakestoreapi.com/products")
       .then((response) => {
-        setProducts(response.data); // Set the products data
-        setLoading(false);
+        setProducts(response.data); // Set products data
+        setLoading(false); // Set loading state to false once products are loaded
       })
       .catch((error) => {
         console.error("There was an error fetching the products!", error);
@@ -26,12 +27,12 @@ const App = () => {
   }, []);
 
   const handleAddToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
+    setCart((prevCart) => [...prevCart, product]); // Add product to cart
   };
 
   return (
     <div className="font-sans text-gray-900">
-      <Navbar cartCount={cart.length} />
+      <Navbar cartCount={cart.length} /> {/* Display Cart Count in Navbar */}
       <div className="container mx-auto p-4">
         <Breadcrumbs />
         <Routes>
@@ -53,8 +54,8 @@ const App = () => {
               </div>
             }
           />
-          <Route path="/cart" element={<CartPage cart={cart} />} />
-          <Route path="/product/:productId" element={<ProductDetailsPage />} /> {/* Product Details Route */}
+          <Route path="/cart" element={<CartPage cart={cart} setCart={setCart} />} />
+          <Route path="/product/:productId" element={<ProductDetailsPage />} />
         </Routes>
       </div>
     </div>
